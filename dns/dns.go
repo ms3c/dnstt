@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"strings"
@@ -44,9 +45,18 @@ var (
 	ErrIntegerOverflow = errors.New("integer overflow")
 )
 
+var (
+	RRTypeTXT uint16
+)
+
+func init() {
+	var dnsType uint
+	flag.UintVar(&dnsType, "dns", 16, "Set the RRTypeTXT value")
+	flag.Parse()
+	RRTypeTXT = uint16(dnsType)
+}
+
 const (
-	// https://tools.ietf.org/html/rfc1035#section-3.2.2
-	RRTypeTXT = 16
 	// https://tools.ietf.org/html/rfc6891#section-6.1.1
 	RRTypeOPT = 41
 
@@ -54,10 +64,10 @@ const (
 	ClassIN = 1
 
 	// https://tools.ietf.org/html/rfc1035#section-4.1.1
-	RcodeNoError         = 0  // a.k.a. NOERROR
-	RcodeFormatError     = 1  // a.k.a. FORMERR
-	RcodeNameError       = 3  // a.k.a. NXDOMAIN
-	RcodeNotImplemented  = 4  // a.k.a. NOTIMPL
+	RcodeNoError        = 0 // a.k.a. NOERROR
+	RcodeFormatError    = 1 // a.k.a. FORMERR
+	RcodeNameError      = 3 // a.k.a. NXDOMAIN
+	RcodeNotImplemented = 4 // a.k.a. NOTIMPL
 	// https://tools.ietf.org/html/rfc6891#section-9
 	ExtendedRcodeBadVers = 16 // a.k.a. BADVERS
 )
